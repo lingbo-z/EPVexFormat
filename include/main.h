@@ -8,7 +8,6 @@ using namespace vex;
 // Include subsystem headers
 #include "robot-config.h"
 #include "autons.h"
-#include "auton-selector.h"
 #include "functions.h"
 #include "arm.h"
 

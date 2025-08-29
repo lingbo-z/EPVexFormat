@@ -5,10 +5,7 @@
 
 using namespace vex;
 
-// Autonomous Routines
-void autonLeft();
-void autonRight();
-void autonSkills();
-void autonTest();
+// Basic autonomous examples for learning
+void basicAuton();
 
 #endif

@@ -45,3 +45,24 @@ void resetDrivePosition() {
   LeftMotor.resetPosition();
   RightMotor.resetPosition();
 }
+
+// Simple time-based movement functions for beginners
+void driveForTime(int milliseconds, int speed) {
+  // Drive forward for a specific amount of time
+  // This is easier for beginners than distance-based movement
+  LeftMotor.spin(forward, speed, percent);
+  RightMotor.spin(forward, speed, percent);
+  wait(milliseconds, msec);
+  LeftMotor.stop();
+  RightMotor.stop();
+}
+
+void turnForTime(int milliseconds, int speed) {
+  // Turn right for a specific amount of time
+  // Left motor forward, right motor backward = turn right
+  LeftMotor.spin(forward, speed, percent);
+  RightMotor.spin(reverse, speed, percent);
+  wait(milliseconds, msec);
+  LeftMotor.stop();
+  RightMotor.stop();
+}

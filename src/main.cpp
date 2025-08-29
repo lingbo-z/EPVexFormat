@@ -21,9 +21,6 @@ void pre_auton(void) {
 
   // All activities that occur before the competition starts
   // Example: clearing encoders, setting servo positions, ...
-  
-  // Display autonomous selector
-  selectAuton();
 }
 
 /*---------------------------------------------------------------------------*/
@@ -37,26 +34,23 @@ void pre_auton(void) {
 /*---------------------------------------------------------------------------*/
 
 void autonomous(void) {
-  // Run selected autonomous routine
-  int selection = getAutonSelection();
+  // This function runs during the autonomous period
+  // You can either use the helper functions from functions.h or control motors directly
   
-  switch(selection) {
-    case 0:
-      autonLeft();
-      break;
-    case 1:
-      autonRight(); 
-      break;
-    case 2:
-      autonSkills();
-      break;
-    case 3:
-      autonTest();
-      break;
-    default:
-      autonTest();
-      break;
-  }
+  // Option 1: Use simple time-based movement (easier for beginners)
+  driveForTime(2000, 50);  // Drive forward for 2 seconds at 50% speed
+  wait(500, msec);         // Pause for half a second
+  turnForTime(1000, 40);   // Turn right for 1 second at 40% speed
+  
+  // Option 2: Or you can run the example function
+  // basicAuton();
+  
+  // Option 3: Or control motors directly like this:
+  // LeftMotor.spin(forward, 50, percent);
+  // RightMotor.spin(forward, 50, percent);
+  // wait(2000, msec);
+  // LeftMotor.stop();
+  // RightMotor.stop();
 }
 
 /*---------------------------------------------------------------------------*/
@@ -70,47 +64,51 @@ void autonomous(void) {
 /*---------------------------------------------------------------------------*/
 
 void usercontrol(void) {
-  // User control code here, inside the loop
+  // This is where you control the robot with the controller
+  // The code inside this loop runs over and over while the robot is enabled
+  
   while (1) {
-    // ========== CLAWBOT DRIVETRAIN CONTROL ==========
-    // Tank drive: Left stick Y controls left motor, Right stick Y controls right motor
-    int leftSpeed = Controller1.Axis3.position(percent);
-    int rightSpeed = Controller1.Axis2.position(percent);
+    // ========== TANK DRIVE CONTROL ==========
+    // Get joystick values for tank drive
+    // Left joystick Y-axis controls left motor
+    // Right joystick Y-axis controls right motor
+    int leftSpeed = Controller1.Axis3.position(percent);   // Left Y joystick (-100 to 100)
+    int rightSpeed = Controller1.Axis2.position(percent);  // Right Y joystick (-100 to 100)
     
-    // Apply tank drive control
+    // Make the motors spin at the joystick speeds
     LeftMotor.spin(forward, leftSpeed, percent);
     RightMotor.spin(forward, rightSpeed, percent);
     
-    // ========== CLAWBOT ARM CONTROL ==========
-    // L1 and L2 buttons control arm up/down
+    // ========== ARM CONTROL ==========
+    // Use shoulder buttons to control the arm
     if (Controller1.ButtonL1.pressing()) {
-      armUp();
+      armUp();        // L1 button moves arm up
     } else if (Controller1.ButtonL2.pressing()) {
-      armDown();
+      armDown();      // L2 button moves arm down  
     } else {
-      armStop();
+      armStop();      // No button = stop arm
     }
     
-    // ========== CLAWBOT CLAW CONTROL ==========
-    // R1 and R2 buttons control claw open/close
+    // ========== CLAW CONTROL ==========
+    // Use trigger buttons to control the claw
     if (Controller1.ButtonR1.pressing()) {
-      clawOpen();
+      clawOpen();     // R1 button opens claw
     } else if (Controller1.ButtonR2.pressing()) {
-      clawClose();
+      clawClose();    // R2 button closes claw
     } else {
-      clawStop();
+      clawStop();     // No button = stop claw
     }
     
-    // ========== UTILITY FUNCTIONS ==========
-    // A button resets drive encoders
+    // ========== HELPFUL BUTTON ==========
+    // A button resets the motor position counters (useful for autonomous)
     if (Controller1.ButtonA.pressing()) {
       resetDrivePosition();
-      Controller1.rumble(".");
-      wait(200, msec); // Debounce
+      Controller1.rumble(".");  // Give feedback that it worked
+      wait(200, msec);          // Wait so button press doesn't repeat
     }
 
-    wait(20, msec); // Sleep the task for a short amount of time to
-                    // prevent wasted resources.
+    // This small delay prevents the program from using too much processing power
+    wait(20, msec);
   }
 }
 
